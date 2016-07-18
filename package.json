@@ -1,0 +1,34 @@
+{
+  "name": "xcms",
+  "version": "1.0.0",
+  "description": "Pluggable cms",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "babel src --out-dir dist",
+    "test": "make test",
+    "cover": "make test-cov",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markacola/xcms.git"
+  },
+  "keywords": [
+    "cms"
+  ],
+  "author": "Mark Cola",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markacola/xcms/issues"
+  },
+  "homepage": "https://github.com/markacola/xcms#readme",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "es6-error": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-istanbul": "^0.11.0",
+    "mocha": "^2.5.3",
+    "should": "^10.0.0"
+  }
+}
