@@ -29,6 +29,7 @@
   "devDependencies": {
     "babel-istanbul": "^0.11.0",
     "mocha": "^2.5.3",
-    "should": "^10.0.0"
+    "should": "^10.0.0",
+    "sinon": "^1.17.4"
   }
 }

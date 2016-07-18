@@ -21,19 +21,23 @@ export default class App extends Emitter {
     this.plugins = new Set()
   }
 
-  use(plugin) {
-    if (!(plugin instanceof Plugin)) throw new TypeError('plugin must extend xcms.Plugin!')
-    debug(`registered ${plugin.name}`)
-    this.wirePlugin(plugin)
-    plugin.onMount(this)
+  use(...plugins) {
+    for (let plugin of plugins) {
+      if (!(plugin instanceof Plugin)) throw new TypeError('plugin must extend xcms.Plugin!')
+      debug(`registered ${plugin.name}`)
+      this.wirePlugin(plugin)
+      plugin.onMount(this)
+    }
     return this
   }
 
-  unuse(plugin) {
-    if (!(plugin instanceof Plugin)) throw new TypeError('plugin must extend xcms.Plugin!')
-    debug(`deregistered ${plugin.name}`)
-    this.unwirePlugin(plugin)
-    plugin.onUnmount(this)
+  unuse(...plugins) {
+    for (let plugin of plugins) {
+      if (!(plugin instanceof Plugin)) throw new TypeError('plugin must extend xcms.Plugin!')
+      debug(`deregistered ${plugin.name}`)
+      this.unwirePlugin(plugin)
+      plugin.onUnmount(this)
+    }
     return this
   }
 

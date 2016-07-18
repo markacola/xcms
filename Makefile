@@ -4,7 +4,8 @@ REQUIRED = --require should
 
 COMPILER = --compilers js:babel-core/register
 
-TESTS = test/app/*
+TESTS = test/app/* \
+	test/plugin/*
 
 test:
 	@NODE_ENV=test node_modules/.bin/babel-node \
