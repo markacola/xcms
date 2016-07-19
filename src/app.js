@@ -36,7 +36,6 @@ export default class App extends Emitter {
       if (!(plugin instanceof Plugin)) throw new TypeError('plugin must extend xcms.Plugin!')
       debug(`deregistered ${plugin.name}`)
       this.unwirePlugin(plugin)
-      plugin.onUnmount(this)
     }
     return this
   }
@@ -44,11 +43,13 @@ export default class App extends Emitter {
   wirePlugin(plugin) {
     this.plugins.add(plugin)
     plugin.on('packet', this.handlePacket.bind(this))
+    plugin.onMount(this)
   }
 
   unwirePlugin(plugin) {
     this.plugins.delete(plugin)
     plugin.removeListener('packet', this.handlePacket.bind(this))
+    plugin.onUnmount(this)
   }
 
   handlePacket(packet) {
