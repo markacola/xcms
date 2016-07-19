@@ -42,17 +42,17 @@ export default class App extends Emitter {
 
   wirePlugin(plugin) {
     this.plugins.add(plugin)
-    plugin.on('packet', this.handlePacket.bind(this))
+    plugin.on('packet', this.handlePacket)
     plugin.onMount(this)
   }
 
   unwirePlugin(plugin) {
     this.plugins.delete(plugin)
-    plugin.removeListener('packet', this.handlePacket.bind(this))
+    plugin.removeListener('packet', this.handlePacket)
     plugin.onUnmount(this)
   }
 
-  handlePacket(packet) {
+  handlePacket = (packet) => {
     if (!(packet instanceof Packet)) throw new TypeError('packet must extend xcms.Packet!')
     debug(`handled packet: ${packet.type}`)
     for(let plugin of this.plugins) {
