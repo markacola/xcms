@@ -5,7 +5,8 @@ REQUIRED = --require should
 COMPILER = --compilers js:babel-core/register
 
 TESTS = test/app/* \
-	test/plugin/*
+	test/plugin/* \
+	test/errors/*
 
 test:
 	@NODE_ENV=test node_modules/.bin/babel-node \
@@ -17,7 +18,7 @@ test:
 
 test-cov:
 	@NODE_ENV=test node_modules/.bin/babel-node \
-		./node_modules/.bin/babel-istanbul cover \
+		./node_modules/.bin/istanbul cover \
 		./node_modules/.bin/_mocha \
 		-- -u exports \
 		$(COMPILER) \
