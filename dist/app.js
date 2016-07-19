@@ -48,30 +48,20 @@ var App = function (_Emitter) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
 
-    Object.assign(_this, opt);
-    _this.plugins = new Set();
-    return _this;
-  }
-
-  _createClass(App, [{
-    key: 'use',
-    value: function use() {
-      for (var _len = arguments.length, plugins = Array(_len), _key = 0; _key < _len; _key++) {
-        plugins[_key] = arguments[_key];
-      }
-
+    _this.handlePacket = function (packet) {
+      if (!(packet instanceof _packet2.default)) throw new TypeError('packet must extend xcms.Packet!');
+      debug('handled packet: ' + packet.type);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = plugins[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = _this.plugins[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var plugin = _step.value;
 
-          if (!(plugin instanceof _plugin2.default)) throw new TypeError('plugin must extend xcms.Plugin!');
-          debug('registered ' + plugin.name);
-          this.wirePlugin(plugin);
-          plugin.onMount(this);
+          if (plugin.canHandlePacket(packet)) {
+            return plugin.consumePacket(packet);
+          }
         }
       } catch (err) {
         _didIteratorError = true;
@@ -88,13 +78,19 @@ var App = function (_Emitter) {
         }
       }
 
-      return this;
-    }
-  }, {
-    key: 'unuse',
-    value: function unuse() {
-      for (var _len2 = arguments.length, plugins = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        plugins[_key2] = arguments[_key2];
+      throw new _errors.UnhandledPacketError('unhandled packet. type: ' + packet.type);
+    };
+
+    Object.assign(_this, opt);
+    _this.plugins = new Set();
+    return _this;
+  }
+
+  _createClass(App, [{
+    key: 'use',
+    value: function use() {
+      for (var _len = arguments.length, plugins = Array(_len), _key = 0; _key < _len; _key++) {
+        plugins[_key] = arguments[_key];
       }
 
       var _iteratorNormalCompletion2 = true;
@@ -106,9 +102,8 @@ var App = function (_Emitter) {
           var plugin = _step2.value;
 
           if (!(plugin instanceof _plugin2.default)) throw new TypeError('plugin must extend xcms.Plugin!');
-          debug('deregistered ' + plugin.name);
-          this.unwirePlugin(plugin);
-          plugin.onUnmount(this);
+          debug('registered ' + plugin.name);
+          this.wirePlugin(plugin);
         }
       } catch (err) {
         _didIteratorError2 = true;
@@ -128,33 +123,23 @@ var App = function (_Emitter) {
       return this;
     }
   }, {
-    key: 'wirePlugin',
-    value: function wirePlugin(plugin) {
-      this.plugins.add(plugin);
-      plugin.on('packet', this.handlePacket.bind(this));
-    }
-  }, {
-    key: 'unwirePlugin',
-    value: function unwirePlugin(plugin) {
-      this.plugins.delete(plugin);
-      plugin.removeListener('packet', this.handlePacket.bind(this));
-    }
-  }, {
-    key: 'handlePacket',
-    value: function handlePacket(packet) {
-      if (!(packet instanceof _packet2.default)) throw new TypeError('packet must extend xcms.Packet!');
-      debug('handled packet: ' + packet.type);
+    key: 'unuse',
+    value: function unuse() {
+      for (var _len2 = arguments.length, plugins = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        plugins[_key2] = arguments[_key2];
+      }
+
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator3 = this.plugins[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        for (var _iterator3 = plugins[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
           var plugin = _step3.value;
 
-          if (plugin.canHandlePacket(packet)) {
-            return plugin.consumePacket(packet);
-          }
+          if (!(plugin instanceof _plugin2.default)) throw new TypeError('plugin must extend xcms.Plugin!');
+          debug('deregistered ' + plugin.name);
+          this.unwirePlugin(plugin);
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -171,7 +156,21 @@ var App = function (_Emitter) {
         }
       }
 
-      throw new _errors.UnhandledPacketError('unhandled packet. type: ' + packet.type);
+      return this;
+    }
+  }, {
+    key: 'wirePlugin',
+    value: function wirePlugin(plugin) {
+      this.plugins.add(plugin);
+      plugin.on('packet', this.handlePacket);
+      plugin.onMount(this);
+    }
+  }, {
+    key: 'unwirePlugin',
+    value: function unwirePlugin(plugin) {
+      this.plugins.delete(plugin);
+      plugin.removeListener('packet', this.handlePacket);
+      plugin.onUnmount(this);
     }
   }]);
 

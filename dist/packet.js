@@ -29,9 +29,7 @@ var debug = require('debug');
 var Packet = function (_Emitter) {
   _inherits(Packet, _Emitter);
 
-  function Packet() {
-    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
+  function Packet(_ref) {
     var type = _ref.type;
 
     var props = _objectWithoutProperties(_ref, ['type']);
