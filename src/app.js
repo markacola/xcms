@@ -58,15 +58,19 @@ export default class App extends Emitter {
     for(let plugin of this.plugins) {
       if (plugin.canHandlePacket(packet)) {
         handler = plugin
+        break
       }
     }
     if (!handler) throw new UnhandledPacketError(`unhandled packet. type: ${packet.type}`)
     handler.consumePacket(packet)
-    for(let plugin of this.plugins) {
-      if (plugin.canHandlePacketEcho(packet)) {
-        plugin.consumePacketEcho(new PacketEcho(packet))
+    process.nextTick(() => {
+      if (packet.suppressEcho) return
+      for(let plugin of this.plugins) {
+        if (plugin.canHandlePacketEcho(packet)) {
+          plugin.consumePacketEcho(new PacketEcho(packet))
+        }
       }
-    }
+    })
   }
 
 }
