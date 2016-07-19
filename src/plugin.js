@@ -3,6 +3,7 @@ const debug = require('debug')
 
 import assert from 'assert'
 import Emitter from 'events'
+import Packet from './packet'
 
 export default class Plugin extends Emitter {
 
@@ -14,11 +15,12 @@ export default class Plugin extends Emitter {
     this.debug = debug(`xcms:plugin:${name}`)
   }
 
-  onMount(app) {}
-
-  onUnmount(app) {}
-
-  consumePacket(packet) {}
+  emit(...args) {
+    if (args[0] instanceof Packet) {
+      return super.emit('packet', ...args)
+    }
+    super.emit(...args)
+  }
 
   canHandlePacket({type}) {
     let {handles} = this
