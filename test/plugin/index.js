@@ -11,6 +11,9 @@ describe('Plugin', () => {
     packetA = new Packet({type: 'test-packet-a'})
     packetB = new Packet({type: 'test-packet-b'})
     class PacketProducerPlugin extends Plugin {
+      constructor() {
+        super({name: 'test-c'})
+      }
       onMount() {
         this.emit(packetA)
       }
@@ -18,15 +21,25 @@ describe('Plugin', () => {
         this.emit(packetB)
       }
     }
+    class PluginA extends Plugin {
+      constructor() {
+        super({name: 'test-a', handles: 'test-packet-a'})
+      }
+    }
+    class PluginB extends Plugin {
+      constructor() {
+        super({name: 'test-b', handles: 'test-packet-b'})
+      }
+    }
     app = new App()
-    pluginA = new Plugin({name: 'test-a', handles: 'test-packet-a'})
-    pluginB = new Plugin({name: 'test-b', handles: 'test-packet-b'})
-    pluginC = new PacketProducerPlugin({name: 'test-c'})
+    pluginA = new PluginA()
+    pluginB = new PluginB()
+    pluginC = new PacketProducerPlugin()
   })
 
   describe('onMount', () => {
 
-    it('should call mount', () => {
+    it('should call onMount', () => {
       let spy = sinon.spy(pluginA, 'onMount')
 
       app.use(pluginA)
@@ -39,7 +52,7 @@ describe('Plugin', () => {
 
   describe('onUnmount', () => {
 
-    it('should call unmount', () => {
+    it('should call onUnmount', () => {
       let spy = sinon.spy(pluginA, 'onUnmount')
 
       app.use(pluginA)
@@ -68,6 +81,12 @@ describe('Plugin', () => {
 
   describe('canHandlePacket', () => {
 
+    class HandlesPlugin extends Plugin {
+      constructor(handles) {
+        super({name: 'handles-plugin', handles})
+      }
+    }
+
     it('should test straight equity', () => {
       let canHandlePacket = sinon.spy(pluginA, 'canHandlePacket')
 
@@ -81,7 +100,7 @@ describe('Plugin', () => {
     })
 
     it('should test packet type in set', () => {
-      let pluginA = new Plugin({name: 'test-a', handles: new Set(['test-packet-a', 'test-packet-b'])})
+      let pluginA = new HandlesPlugin(new Set(['test-packet-a', 'test-packet-b']))
       let canHandlePacket = sinon.spy(pluginA, 'canHandlePacket')
 
       app.use(pluginA)
@@ -96,7 +115,7 @@ describe('Plugin', () => {
     })
 
     it('should test packet type matches regex', () => {
-      let pluginA = new Plugin({name: 'test-a', handles: /test-packet-[ab]/})
+      let pluginA = new HandlesPlugin(/test-packet-[ab]/)
       let canHandlePacket = sinon.spy(pluginA, 'canHandlePacket')
 
       app.use(pluginA)
