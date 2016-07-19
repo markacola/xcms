@@ -14,3 +14,13 @@ export default class Packet extends Emitter {
   }
 
 }
+
+export class PacketEcho extends Emitter {
+
+  constructor(packet) {
+    assert(packet instanceof Packet, 'origin packet must be instanceof Packet')
+    super()
+    Object.assign(this, packet)
+  }
+
+}

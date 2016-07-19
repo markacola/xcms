@@ -33,6 +33,10 @@ export default class Plugin extends Emitter {
 
   consumePacket(packet) {}
 
+  canHandlePacketEcho = () => false
+
+  consumePacketEcho(echo) {}
+
   onMount(app) {}
 
   onUnmount(app) {}
