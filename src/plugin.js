@@ -29,4 +29,10 @@ export default class Plugin extends Emitter {
     )
   }
 
+  consumePacket(packet) {}
+
+  onMount(app) {}
+
+  onUnmount(app) {}
+
 }
