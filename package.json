@@ -1,6 +1,6 @@
 {
-  "name": "xcms",
-  "version": "1.0.0",
+  "name": "xcms-core",
+  "version": "0.0.1",
   "description": "Pluggable cms",
   "main": "dist/app.js",
   "scripts": {
