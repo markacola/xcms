@@ -6,7 +6,7 @@ import Emitter from 'events'
 
 export default class Plugin extends Emitter {
 
-  constructor({name, handles = [], ...opt} = {}) {
+  constructor({name, handles = new Set(), ...opt}) {
     assert(name, 'plugin name required')
     super()
 

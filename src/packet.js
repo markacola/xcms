@@ -6,7 +6,7 @@ import Emitter from 'events'
 
 export default class Packet extends Emitter {
 
-  constructor({type, ...props} = {}) {
+  constructor({type, ...props}) {
     assert(type, 'packet type required')
     super()
 
